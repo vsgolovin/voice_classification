@@ -1,5 +1,5 @@
 # Repository-specific
-data/
+data/*
 !data/.keep
 
 
