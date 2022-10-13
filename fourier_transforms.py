@@ -1,4 +1,5 @@
 from typing import Tuple
+from pathlib import Path
 import torch
 from torchaudio import transforms as T
 import numpy as np
@@ -41,13 +42,12 @@ if __name__ == "__main__":
     plt.rc("lines", linewidth=0.8)
 
     # load data
-    df_train, df_test, _ = load_datasets()
+    df_train, df_test, _ = load_datasets(seed=42)
     w, sr, _ = df_train[0]
 
     # compute DFT with scipy
     freq, dft = scipy_dft(w, sr)
     dft /= dft.max()
-    print(dft.shape, (dft**2).sum())
 
     plt.figure()
     plt.plot(freq, dft, label="scipy")
@@ -60,4 +60,5 @@ if __name__ == "__main__":
     plt.xlabel("Frequency (Hz)")
     plt.title("Amplitude spectrum")
     plt.legend()
-    plt.show()
+
+    plt.savefig(Path("plots") / "scipy_torch_comparison.png", dpi=150)
