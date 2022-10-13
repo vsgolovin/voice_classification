@@ -1,10 +1,8 @@
 from typing import Tuple
-from pathlib import Path
 import torch
 from torchaudio import transforms as T
 import numpy as np
 from scipy.fft import fft
-from dataset import load_datasets
 
 
 def scipy_dft(waveform: torch.Tensor, sample_rate: int
@@ -37,13 +35,15 @@ def torch_averaged_stft(waveform, sr, n_fft=512
 
 
 if __name__ == "__main__":
+    from pathlib import Path
     import matplotlib.pyplot as plt
+    from dataset import load_datasets
 
     plt.rc("lines", linewidth=0.8)
 
     # load data
-    df_train, df_test, _ = load_datasets(seed=42)
-    w, sr, _ = df_train[0]
+    train, _, _ = load_datasets(seed=42)
+    w, sr, _ = train[0]
 
     # compute DFT with scipy
     freq, dft = scipy_dft(w, sr)
