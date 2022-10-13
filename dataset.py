@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Optional
 from pathlib import Path
 import random
 import pandas as pd
@@ -15,9 +15,13 @@ def load_datasets(
         path: Union[Path, str] = "data",
         subset: str = "dev-clean",
         train_size: float = 0.6,
-        test_size: float = 0.2):
+        test_size: float = 0.2,
+        seed: Optional[int] = None):
     path = Path(path)
     df = get_speakers(path / "SPEAKERS.txt")
+
+    if seed is not None:
+        random.seed(seed)  # ensures consistent split
     df_train, df_test, df_dev = split_speakers(df, train_size, test_size)
 
     train_dataset = LibriTTS(path / subset, df_train)
