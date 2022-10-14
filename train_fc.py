@@ -24,6 +24,7 @@ def main():
 
     train_loss, train_acc, val_loss, val_acc = train(
         model, X_train, y_train, X_dev, y_dev)
+    print(f"Validation accuracy {val_acc[np.argmin(val_loss)]*100:.1f}%")
 
     plt.figure()
     epochs = np.arange(len(train_loss)) + 1

@@ -14,7 +14,7 @@ from utils.dataset import load_datasets
 
 
 BATCH_SIZE = 32
-EPOCHS = 15
+EPOCHS = 10
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
@@ -34,6 +34,7 @@ def main():
     cnn = get_model().to(DEVICE)
     train_loss, train_acc, val_loss, val_acc = train(
         cnn, train_dataloader, dev_dataloader, epochs=EPOCHS)
+    print(f"Validation accuracy {val_acc[np.argmin(val_loss)]*100:.1f}%")
 
     epochs = np.arange(0, EPOCHS) + 1
     plt.plot(epochs, train_loss, 'b-', label="train")
