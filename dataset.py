@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union, Optional
+from typing import List, Tuple, Union, Optional, Callable
 from pathlib import Path
 import random
 import pandas as pd
@@ -16,7 +16,8 @@ def load_datasets(
         subset: str = "dev-clean",
         train_size: float = 0.6,
         test_size: float = 0.2,
-        seed: Optional[int] = None):
+        seed: Optional[int] = None,
+        transform: Optional[Callable] = None):
     path = Path(path)
     df = get_speakers(path / "SPEAKERS.txt")
 
@@ -24,10 +25,10 @@ def load_datasets(
         random.seed(seed)  # ensures consistent split
     df_train, df_test, df_dev = split_speakers(df, train_size, test_size)
 
-    train_dataset = LibriTTS(path / subset, df_train)
-    test_dataset = LibriTTS(path / subset, df_test)
+    train_dataset = LibriTTS(path / subset, df_train, transform)
+    test_dataset = LibriTTS(path / subset, df_test, transform)
     if df_dev is not None:
-        dev_dataset = LibriTTS(path / subset, df_dev)
+        dev_dataset = LibriTTS(path / subset, df_dev, transform)
     else:
         dev_dataset = None
 
@@ -96,7 +97,8 @@ def split_speakers(df: pd.DataFrame, train_size: float = 0.6,
 class LibriTTS(Dataset):
     SAMPLE_RATE = 24000
 
-    def __init__(self, path: Union[Path, str], speakers: pd.DataFrame):
+    def __init__(self, path: Union[Path, str], speakers: pd.DataFrame,
+                 transform: Optional[Callable] = None):
         self.files = []
         self.labels = []
         for _, speaker in speakers.iterrows():
@@ -104,6 +106,7 @@ class LibriTTS(Dataset):
             cur_files = list(cur_path.rglob("*.wav"))
             self.files += cur_files
             self.labels += [speaker["SEX"]] * len(cur_files)
+        self.transform = transform
 
     def __len__(self):
         return len(self.labels)
@@ -113,4 +116,7 @@ class LibriTTS(Dataset):
         assert sample_rate == self.SAMPLE_RATE,\
             f"File {self.files[idx]}: incorrect sample rate ({sample_rate})"
         label = 0 if self.labels[idx] == "M" else 1
-        return waveform, sample_rate, label
+        if self.transform is None:
+            return waveform, sample_rate, label
+        out = self.transform(waveform)
+        return out, label
