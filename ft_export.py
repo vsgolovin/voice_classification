@@ -8,11 +8,12 @@ from utils.dataset import load_datasets, LibriTTS
 
 
 ARRAY_PATH = Path("data/arrays")
+N_FFT = 512
 
 
 def main():
     train, test, dev = load_datasets(
-        seed=42, transform=T.Spectrogram(n_fft=512))
+        seed=42, transform=T.Spectrogram(n_fft=N_FFT))
     save_to = ARRAY_PATH
     print(f"Saving Fourier transforms to {save_to}")
     for dset, name in zip((train, test, dev), ("train", "test", "dev")):

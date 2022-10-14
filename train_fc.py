@@ -7,7 +7,7 @@ from torch import nn
 from torch.optim import Adam
 import matplotlib.pyplot as plt
 
-from ft_export import get_array_paths
+from ft_export import get_array_paths, N_FFT
 
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -20,13 +20,7 @@ def main():
                         for fname in get_array_paths("train"))
     X_dev, y_dev = (np.loadtxt(fname) for fname in get_array_paths("dev"))
 
-    input_dim = X_train.shape[1]
-    hidden_dim = 512
-    model = nn.Sequential(
-        nn.Linear(input_dim, hidden_dim),
-        nn.ReLU(),
-        nn.Linear(hidden_dim, 1)
-    ).to(DEVICE)
+    model = SimpleNeuralNetwork(input_dim=N_FFT // 2 + 1).to(DEVICE)
 
     train_loss, train_acc, val_loss, val_acc = train(
         model, X_train, y_train, X_dev, y_dev)
@@ -41,8 +35,22 @@ def main():
     plt.plot(epochs, train_acc * 100, 'b:', label="train")
     plt.plot(epochs, val_acc * 100, 'r:', label="validation")
     plt.ylabel("Accuracy, %")
+    plt.ylim(48, 102)
     plt.legend()
     plt.savefig(Path("plots/fc_model.png"), dpi=150)
+
+
+class SimpleNeuralNetwork(nn.Module):
+    def __init__(self, input_dim: int, hidden_size: int = 512):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(input_dim, hidden_size),
+            nn.ReLU(),
+            nn.Linear(hidden_size, 1)
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.net(x)
 
 
 def train(model: nn.Module, X_train: np.ndarray, y_train: np.ndarray,
