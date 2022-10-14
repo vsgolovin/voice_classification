@@ -1,6 +1,7 @@
 # Repository-specific
-data/*
-!data/.keep
+data/LibriTTS/*
+data/arrays/*
+!data/*/.keep
 
 
 # Byte-compiled / optimized / DLL files

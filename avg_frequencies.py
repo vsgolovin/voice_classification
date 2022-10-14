@@ -3,8 +3,8 @@ import torch
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
-from fourier_transforms import scipy_dft
-from dataset import load_datasets
+from utils.fourier_transforms import scipy_dft
+from utils.dataset import load_datasets
 
 
 def main():

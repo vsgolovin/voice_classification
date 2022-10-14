@@ -12,7 +12,7 @@ SUBSET = "dev-clean"
 
 
 def load_datasets(
-        path: Union[Path, str] = "data",
+        path: Union[Path, str] = "data/LibriTTS",
         subset: str = "dev-clean",
         train_size: float = 0.6,
         test_size: float = 0.2,
