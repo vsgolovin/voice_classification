@@ -9,12 +9,12 @@ from torch.utils.data import DataLoader
 from torch.optim import Adam
 from torchaudio import transforms as T
 from torchvision.transforms import Compose, RandomCrop
-from torchvision.models import vgg11, VGG11_Weights
+from torchvision.models import vgg11
 from utils.dataset import load_datasets
 
 
 BATCH_SIZE = 32
-EPOCHS = 10
+EPOCHS = 15
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
@@ -22,10 +22,7 @@ def main():
     # load data
     train_dset, _, dev_dset = load_datasets(
         seed=42,
-        transform=Compose([
-            T.Spectrogram(n_fft=446),
-            RandomCrop(224, pad_if_needed=True)
-        ])
+        transform=get_transform()
     )
     train_dataloader = DataLoader(train_dset, BATCH_SIZE, shuffle=True)
     dev_dataloader = DataLoader(dev_dset, BATCH_SIZE, shuffle=True)
@@ -58,7 +55,7 @@ def get_transform():
 
 
 def get_model():
-    cnn = vgg11(weights=VGG11_Weights.DEFAULT)
+    cnn = vgg11()
     cnn.classifier = nn.Sequential(
         nn.Linear(25088, 4096),
         nn.ReLU(),

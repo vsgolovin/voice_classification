@@ -1,3 +1,5 @@
+from pathlib import Path
+import pickle
 import numpy as np
 from sklearn.svm import SVC
 
@@ -15,8 +17,11 @@ X_dev = np.loadtxt(path_X)
 y_dev = np.loadtxt(path_y)
 
 # fit decision tree
-clf = SVC()
+clf = SVC(C=2.0, kernel="rbf")
 clf.fit(X_train, y_train)
 predictions = clf.predict(X_dev)
 acc = sum(predictions == y_dev) / len(y_dev)
 print(f"SVM classification accuracy: {(acc*100):.1f}%")
+
+with open(Path("models/svm.pkl"), "wb") as outfile:
+    pickle.dump(clf, outfile)
