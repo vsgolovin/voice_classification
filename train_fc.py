@@ -103,7 +103,8 @@ def train(model: nn.Module, X_train: np.ndarray, y_train: np.ndarray,
 
 @torch.no_grad()
 def evaluate(model: nn.Module, X_dev: np.ndarray, y_dev: np.ndarray,
-             loss_fn: Callable, bs: int = BATCH_SIZE) -> Tuple[float, float]:
+             loss_fn: Callable, bs: int = BATCH_SIZE,
+             device: torch.device = DEVICE) -> Tuple[float, float]:
     total_loss = 0.0
     correct_predictions = 0
     model.eval()
@@ -111,7 +112,7 @@ def evaluate(model: nn.Module, X_dev: np.ndarray, y_dev: np.ndarray,
 
     for iter_num in range(len(X_dev) // bs):
         ix = inds[iter_num*bs:(iter_num+1)*bs]
-        X, y = (torch.tensor(arr, device=DEVICE, dtype=torch.float32)
+        X, y = (torch.tensor(arr, device=device, dtype=torch.float32)
                 for arr in (X_dev[ix], y_dev[ix]))
 
         output = model(X).squeeze(1)

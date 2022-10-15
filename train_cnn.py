@@ -106,13 +106,14 @@ def train(model: nn.Module, train_dl: DataLoader, val_dl: DataLoader,
 
 
 @torch.no_grad()
-def evaluate(model: nn.Module, val_dataloader: DataLoader, loss_fn: Callable):
+def evaluate(model: nn.Module, val_dataloader: DataLoader, loss_fn: Callable,
+             device: torch.device = DEVICE):
     total_loss = 0.0
     hits = 0
     samples = 0
     model.eval()
     for X, y in val_dataloader:
-        X, y = X.to(DEVICE), y.to(DEVICE)
+        X, y = X.to(device), y.to(device)
         out = model(X.expand(-1, 3, -1, -1)).squeeze(1)
         total_loss += loss_fn(out, y.float()).item() * len(X)
         hits += int((torch.sigmoid(out).round().int() == y).sum())
