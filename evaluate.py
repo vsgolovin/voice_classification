@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 from torch.nn.functional import binary_cross_entropy_with_logits
 
 from utils.dataset import load_datasets
-from ft_export import get_array_paths, N_FFT
+from ft_export import get_array_paths, N_FFT, SEED
 from train_fc import SimpleNeuralNetwork, evaluate as evaluate_fc
 from train_cnn import get_model, get_transform
 from train_cnn import evaluate as evaluate_cnn
@@ -54,7 +54,7 @@ def test_fc(path: Path):
 
 def test_cnn(path: Path):
     _, test_dset, _ = load_datasets(
-        seed=42,
+        seed=SEED,
         transform=get_transform()
     )
     model = get_model().to(DEVICE)

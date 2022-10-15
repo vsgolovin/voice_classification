@@ -11,6 +11,7 @@ from torchaudio import transforms as T
 from torchvision.transforms import Compose, RandomCrop
 from torchvision.models import vgg11
 from utils.dataset import load_datasets
+from ft_export import SEED
 
 
 BATCH_SIZE = 32
@@ -21,7 +22,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def main():
     # load data
     train_dset, _, dev_dset = load_datasets(
-        seed=42,
+        seed=SEED,
         transform=get_transform()
     )
     train_dataloader = DataLoader(train_dset, BATCH_SIZE, shuffle=True)
@@ -68,7 +69,7 @@ def get_model():
 def train(model: nn.Module, train_dl: DataLoader, val_dl: DataLoader,
           epochs: int = 5, save_weights: bool = True) -> Tuple[np.ndarray]:
     loss_fn = nn.BCEWithLogitsLoss()
-    optimizer = Adam(model.parameters(), lr=3e-4)
+    optimizer = Adam(model.parameters(), lr=3e-4, weight_decay=1e-4)
     train_loss = np.zeros(epochs)
     train_acc = np.zeros_like(train_loss)
     val_loss = np.ones_like(train_loss) * np.inf

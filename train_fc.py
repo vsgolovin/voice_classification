@@ -58,7 +58,7 @@ def train(model: nn.Module, X_train: np.ndarray, y_train: np.ndarray,
           X_dev: np.ndarray, y_dev: np.ndarray, bs: int = BATCH_SIZE,
           epochs: int = EPOCHS, save_weights: bool = True
           ) -> Tuple[np.ndarray]:
-    optimizer = Adam(model.parameters(), lr=3e-4, weight_decay=1e-4)
+    optimizer = Adam(model.parameters(), lr=3e-4, weight_decay=2e-4)
     loss_fn = nn.BCEWithLogitsLoss()
     train_losses = np.zeros(epochs)
     train_acc = np.zeros_like(train_losses)

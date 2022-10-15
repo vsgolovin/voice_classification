@@ -17,7 +17,7 @@ X_dev = np.loadtxt(path_X)
 y_dev = np.loadtxt(path_y)
 
 # fit decision tree
-clf = SVC(C=2.0, kernel="rbf")
+clf = SVC(C=0.5, kernel="linear")
 clf.fit(X_train, y_train)
 predictions = clf.predict(X_dev)
 acc = sum(predictions == y_dev) / len(y_dev)

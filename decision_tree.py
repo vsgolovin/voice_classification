@@ -19,8 +19,8 @@ y_dev = np.loadtxt(path_y)
 # fit decision tree
 clf = DecisionTreeClassifier(
     criterion="entropy",
-    max_depth=10,
-    min_samples_leaf=5,
+    max_depth=5,
+    min_samples_leaf=20,
     random_state=42
 )
 clf.fit(X_train, y_train)
